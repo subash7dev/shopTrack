@@ -1,8 +1,9 @@
 from django.db import models
 from categories.models import Category
+from common.models import BaseModel
 
 
-class Product(models.Model):
+class Product(BaseModel):
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -32,10 +33,6 @@ class Product(models.Model):
     )
 
     is_active = models.BooleanField(default=True)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ["name"]

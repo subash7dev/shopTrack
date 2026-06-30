@@ -1,7 +1,9 @@
 from django.db import models
 
+from common.models import BaseModel
 
-class Category(models.Model):
+
+class Category(BaseModel):
 
     name = models.CharField(
         max_length=100,
@@ -10,14 +12,6 @@ class Category(models.Model):
 
     slug = models.SlugField(
         unique=True,
-    )
-
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True,
     )
 
     class Meta:

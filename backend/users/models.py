@@ -3,10 +3,12 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 
+from common.models import BaseModel
+
 from .managers import UserManager
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(BaseModel, AbstractBaseUser, PermissionsMixin):
 
     ROLE_CHOICES = (
         ("ADMIN", "Admin"),
@@ -35,13 +37,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=False
     )
 
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True
-    )
 
     objects = UserManager()
 

@@ -2,10 +2,10 @@ from django.db import models
 
 from users.models import User
 from products.models import Product
+from common.models import BaseModel
 
 
-class Order(models.Model):
-
+class Order(BaseModel):
     STATUS_CHOICES = (
         ("PENDING", "Pending"),
         ("PROCESSING", "Processing"),
@@ -32,13 +32,7 @@ class Order(models.Model):
         default=0,
     )
 
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-    )
-
-    updated_at = models.DateTimeField(
-        auto_now=True,
-    )
+   
 
     class Meta:
         ordering = ["-created_at"]
