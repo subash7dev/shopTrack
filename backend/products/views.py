@@ -69,23 +69,25 @@ class ProductViewSet(ModelViewSet):
             self.get_object()
         )
 
-    def create(self, request, *args, **kwargs):
-        return ProductService.create(
-            request.data
-        )
+def create(self, request, *args, **kwargs):
+    return ProductService.create(
+        request.user,
+        request.data,
+    )
 
-    def update(self, request, *args, **kwargs):
-        return ProductService.update(
-            self.get_object(),
-            request.data,
-        )
+def update(self, request, *args, **kwargs):
+    return ProductService.update(
+        request.user,
+        self.get_object(),
+        request.data,
+    )
 
-    def partial_update(self, request, *args, **kwargs):
-        return ProductService.partial_update(
-            self.get_object(),
-            request.data,
-        )
-
+def partial_update(self, request, *args, **kwargs):
+    return ProductService.partial_update(
+        request.user,
+        self.get_object(),
+        request.data,
+    )
     def destroy(self, request, *args, **kwargs):
         return ProductService.delete(
             self.get_object(),

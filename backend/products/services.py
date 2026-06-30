@@ -39,7 +39,7 @@ class ProductService:
         )
 
     @staticmethod
-    def create(data):
+    def create(user, data):
 
         data = data.copy()
 
@@ -54,7 +54,7 @@ class ProductService:
             raise_exception=True,
         )
 
-        serializer.save()
+        serializer.save(created_by=user,updated_by=user,)
 
         return ApiResponse.success(
             data=serializer.data,
@@ -63,7 +63,7 @@ class ProductService:
         )
 
     @staticmethod
-    def update(instance, data):
+    def update(user, instance, data):
 
         data = data.copy()
 
@@ -79,7 +79,7 @@ class ProductService:
             raise_exception=True,
         )
 
-        serializer.save()
+        serializer.save(updated_by=user,)
 
         return ApiResponse.success(
             data=serializer.data,
@@ -87,7 +87,7 @@ class ProductService:
         )
 
     @staticmethod
-    def partial_update(instance, data):
+    def partial_update(user,instance, data):
 
         data = data.copy()
 
@@ -104,7 +104,7 @@ class ProductService:
             raise_exception=True,
         )
 
-        serializer.save()
+        serializer.save(updated_by=user, )
 
         return ApiResponse.success(
             data=serializer.data,
