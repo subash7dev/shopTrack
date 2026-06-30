@@ -165,5 +165,7 @@ REST_FRAMEWORK = {
 
     "DEFAULT_PAGINATION_CLASS": "common.pagination.StandardPagination",
 
+     "PAGE_SIZE": 10,
+
     "EXCEPTION_HANDLER": "common.exceptions.custom_exception_handler",
 }
