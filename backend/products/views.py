@@ -48,9 +48,11 @@ from .services import ProductService
 )
 class ProductViewSet(ModelViewSet):
 
-    queryset = Product.objects.select_related(
+    queryset = Product.objects.filter(
+        is_deleted=False
+    ).select_related(
         "category"
-    ).all()
+    )
 
     serializer_class = ProductSerializer
 

@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 
+
 from common.responses import ApiResponse
 from common.utils import generate_slug
 
@@ -9,12 +10,15 @@ from .serializers import ProductSerializer
 
 class ProductService:
 
+    
+
     @staticmethod
     def get_all():
-
-        products = Product.objects.select_related(
+        products = Product.objects.filter(
+        is_deleted=False
+        ).select_related(
             "category"
-        ).all()
+        )
 
         serializer = ProductSerializer(
             products,
@@ -22,9 +26,9 @@ class ProductService:
         )
 
         return ApiResponse.success(
-            data=serializer.data,
-            message="Products fetched successfully.",
-        )
+              data=serializer.data,
+              message="Products fetched successfully.",
+          )
 
     @staticmethod
     def retrieve(instance):
