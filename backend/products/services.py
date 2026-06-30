@@ -14,9 +14,7 @@ class ProductService:
 
     @staticmethod
     def get_all():
-        products = Product.objects.filter(
-        is_deleted=False
-        ).select_related(
+        products = Product.objects.select_related(
             "category"
         )
 

@@ -48,9 +48,7 @@ from .services import ProductService
 )
 class ProductViewSet(ModelViewSet):
 
-    queryset = Product.objects.filter(
-        is_deleted=False
-    ).select_related(
+    queryset = Product.objects.select_related(   
         "category"
     )
 

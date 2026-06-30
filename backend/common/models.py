@@ -1,6 +1,11 @@
 from django.db import models
 from django.utils import timezone
 
+from .managers import (
+    SoftDeleteManager,
+    AllObjectsManager,
+)
+
 
 class BaseModel(models.Model):
 
@@ -14,6 +19,10 @@ class BaseModel(models.Model):
         null=True,
         blank=True,
     )
+
+    objects = SoftDeleteManager()
+
+    all_objects = AllObjectsManager()
 
     class Meta:
         abstract = True
