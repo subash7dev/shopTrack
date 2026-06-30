@@ -1,11 +1,12 @@
-from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
+from common.pagination import StandardPagination
+from common.permissions import IsAdmin
+
 from .models import Product
-from .permissions import IsAdmin
 from .serializers import ProductSerializer
+from .services import ProductService
 
 
 class ProductViewSet(ModelViewSet):
@@ -16,35 +17,28 @@ class ProductViewSet(ModelViewSet):
 
     serializer_class = ProductSerializer
 
+    pagination_class = StandardPagination
+
     permission_classes = [
         IsAuthenticated,
         IsAdmin,
     ]
 
-    filter_backends = [
-        DjangoFilterBackend,
-        filters.SearchFilter,
-        filters.OrderingFilter,
-    ]
+    def list(self, request, *args, **kwargs):
+        return ProductService.get_all()
 
-    filterset_fields = [
-        "category",
-        "is_active",
-    ]
+    def create(self, request, *args, **kwargs):
+        return ProductService.create(
+            request.data
+        )
 
-    search_fields = [
-        "name",
-        "description",
-        "category__name",
-    ]
+    def update(self, request, *args, **kwargs):
+        return ProductService.update(
+            self.get_object(),
+            request.data,
+        )
 
-    ordering_fields = [
-        "price",
-        "stock_quantity",
-        "created_at",
-        "name",
-    ]
-
-    ordering = [
-        "-created_at",
-    ]
+    def destroy(self, request, *args, **kwargs):
+        return ProductService.delete(
+            self.get_object(),
+        )
