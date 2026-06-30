@@ -3,10 +3,10 @@ from rest_framework.views import APIView
 
 from common.permissions import IsAdmin
 
-from .services import DashboardService
+from .services import ReportService
 
 
-class DashboardAPIView(APIView):
+class DashboardView(APIView):
 
     permission_classes = [
         IsAuthenticated,
@@ -15,4 +15,4 @@ class DashboardAPIView(APIView):
 
     def get(self, request):
 
-        return DashboardService.dashboard()
+        return ReportService.dashboard()

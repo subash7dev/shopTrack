@@ -1,13 +1,11 @@
 from django.urls import path
 
-from .views import DashboardAPIView
+from .views import DashboardView
 
 urlpatterns = [
-
     path(
         "dashboard/",
-        DashboardAPIView.as_view(),
+        DashboardView.as_view(),
         name="dashboard",
     ),
-
 ]
