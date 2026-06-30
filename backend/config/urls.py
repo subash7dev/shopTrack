@@ -28,7 +28,10 @@ path(
 ),
 
     path("api/auth/", include("users.urls")),
-
+path(
+    "api/reports/",
+    include("reports.urls"),
+),
     path(
         "api/categories/",
         include("categories.urls"),
