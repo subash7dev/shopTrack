@@ -1,17 +1,16 @@
-from decimal import Decimal
-
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from products.models import Product
-
-from .models import Order, OrderItem
+from .models import Order
 from .serializers import OrderSerializer
+from .services import OrderService
 
 
 class OrderViewSet(ModelViewSet):
+
+    queryset = Order.objects.prefetch_related(
+        "items"
+    )
 
     serializer_class = OrderSerializer
 
@@ -19,85 +18,21 @@ class OrderViewSet(ModelViewSet):
         IsAuthenticated,
     ]
 
-    def get_queryset(self):
+    def list(self, request, *args, **kwargs):
 
-        user = self.request.user
-
-        if user.role == "ADMIN":
-            return Order.objects.prefetch_related(
-                "items"
-            ).all()
-
-        return Order.objects.prefetch_related(
-            "items"
-        ).filter(
-            user=user
+        return OrderService.list(
+            request.user
         )
 
-    def perform_create(self, serializer):
+    def retrieve(self, request, *args, **kwargs):
 
-        serializer.save(
-            user=self.request.user
+        return OrderService.retrieve(
+            self.get_object()
         )
 
     def create(self, request, *args, **kwargs):
 
-        items = request.data.get("items", [])
-
-        if not items:
-            return Response(
-                {
-                    "detail": "Order items required."
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        order = Order.objects.create(
-            user=request.user
-        )
-
-        total = Decimal("0.00")
-
-        for item in items:
-
-            product = Product.objects.get(
-                id=item["product"]
-            )
-
-            qty = int(item["quantity"])
-
-            if product.stock_quantity < qty:
-
-                order.delete()
-
-                return Response(
-                    {
-                        "detail": f"{product.name} is out of stock."
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            OrderItem.objects.create(
-                order=order,
-                product=product,
-                quantity=qty,
-                unit_price=product.price,
-                subtotal=product.price * qty,
-            )
-
-            product.stock_quantity -= qty
-
-            product.save()
-
-            total += product.price * qty
-
-        order.total_amount = total
-
-        order.save()
-
-        serializer = self.get_serializer(order)
-
-        return Response(
-            serializer.data,
-            status=status.HTTP_201_CREATED,
+        return OrderService.create(
+            request.user,
+            request.data.get("items", []),
         )
