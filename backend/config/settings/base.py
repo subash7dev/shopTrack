@@ -4,7 +4,10 @@ from datetime import timedelta
 from decouple import config
 
 from .logging import LOGGING
-from .rest_framework import REST_FRAMEWORK
+from .rest_framework import (
+    REST_FRAMEWORK,
+    SPECTACULAR_SETTINGS,
+)
 
 # Base Directory
 BASE_DIR = Path(__file__).resolve().parent.parent.parent

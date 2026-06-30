@@ -1,0 +1,5 @@
+2026-06-30 12:29:11,542 | INFO | GET /api/v1/products/ | 401 | 0.160s
+2026-06-30 12:29:11,916 | INFO | GET /favicon.ico | 404 | 0.006s
+2026-06-30 12:29:22,637 | INFO | GET /api/v1/products/ | 401 | 0.004s
+2026-06-30 12:33:04,536 | INFO | GET /api/docs/ | 200 | 0.081s
+2026-06-30 12:33:05,974 | INFO | GET /api/schema/ | 200 | 0.064s
