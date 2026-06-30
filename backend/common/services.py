@@ -7,9 +7,7 @@ class BaseService:
     serializer_class = None
 
     @classmethod
-    def get_all(cls):
-
-        queryset = cls.model.objects.all()
+    def get_all(cls, queryset):
 
         serializer = cls.serializer_class(
             queryset,

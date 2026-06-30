@@ -11,11 +11,24 @@ class ProductService(BaseService):
     serializer_class = ProductSerializer
 
     @classmethod
+    def get_all(cls, queryset):
+        """
+        Returns the filtered queryset received from the ViewSet.
+        Filtering, searching, ordering and pagination are handled
+        by DRF before reaching this service.
+        """
+        return super().get_all(queryset)
+
+    @classmethod
+    def retrieve(cls, instance):
+        return super().retrieve(instance)
+
+    @classmethod
     def create(cls, user, data):
 
         data = data.copy()
 
-        if not data.get("slug") and data.get("name"):
+        if data.get("name") and not data.get("slug"):
             data["slug"] = generate_slug(data["name"])
 
         return super().create(user, data)
@@ -28,7 +41,11 @@ class ProductService(BaseService):
         if data.get("name") and not data.get("slug"):
             data["slug"] = generate_slug(data["name"])
 
-        return super().update(user, instance, data)
+        return super().update(
+            user,
+            instance,
+            data,
+        )
 
     @classmethod
     def partial_update(cls, user, instance, data):
@@ -38,4 +55,12 @@ class ProductService(BaseService):
         if data.get("name") and not data.get("slug"):
             data["slug"] = generate_slug(data["name"])
 
-        return super().partial_update(user, instance, data)
+        return super().partial_update(
+            user,
+            instance,
+            data,
+        )
+
+    @classmethod
+    def delete(cls, instance):
+        return super().delete(instance)

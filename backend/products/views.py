@@ -9,6 +9,11 @@ from .models import Product
 from .serializers import ProductSerializer
 from .services import ProductService
 
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
+from .filters import ProductFilter
+
 
 @extend_schema_view(
     list=extend_schema(tags=["Products"], summary="List Products"),
@@ -19,6 +24,40 @@ from .services import ProductService
     destroy=extend_schema(tags=["Products"], summary="Delete Product"),
 )
 class ProductViewSet(BaseViewSet):
+    filter_backends = [
+        DjangoFilterBackend,
+        SearchFilter,
+        OrderingFilter,
+        ]
+
+    filterset_class = ProductFilter
+
+    search_fields = [
+    "name",
+    "description",
+    "category__name",
+]
+
+    ordering_fields = [
+    "price",
+    "stock",
+    "created_at",
+    "updated_at",
+]
+
+    ordering = [
+    "-created_at",
+]
+
+    ordering_fields = [
+    "price",
+    "stock",
+    "created_at",
+]
+
+    ordering = [
+    "-created_at",
+]
 
     queryset = Product.objects.select_related(
         "category"

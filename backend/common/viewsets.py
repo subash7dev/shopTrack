@@ -17,8 +17,20 @@ class BaseViewSet(ModelViewSet):
     service = None
 
     def list(self, request, *args, **kwargs):
-        return self.service.get_all()
 
+       queryset = self.filter_queryset(
+        self.get_queryset()
+    )
+
+       page = self.paginate_queryset(queryset)
+
+       if page is not None:
+           return self.get_paginated_response(
+            self.get_serializer(page, many=True).data
+        )
+
+       return self.service.get_all(queryset)
+    
     def retrieve(self, request, *args, **kwargs):
         return self.service.retrieve(
             self.get_object()
