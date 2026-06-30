@@ -1,12 +1,10 @@
-from django.db.models import Count, Sum
-from django.db.models.functions import TruncMonth
+from django.db.models import Avg, Sum
 
 from common.responses import ApiResponse
 
 from users.models import User
 from categories.models import Category
 from products.models import Product
-from orders.models import Order
 
 
 class ReportService:
@@ -18,35 +16,45 @@ class ReportService:
             "total_users": User.objects.count(),
             "total_categories": Category.objects.count(),
             "total_products": Product.objects.count(),
-            "total_orders": Order.objects.count(),
-            "low_stock_products": Product.objects.filter(
-                stock__lte=10
+
+            "active_products": Product.objects.filter(
+                is_active=True
             ).count(),
+
+            "inactive_products": Product.objects.filter(
+                is_active=False
+            ).count(),
+
+            "low_stock_products": Product.objects.filter(
+                stock_quantity__lte=10
+            ).count(),
+
+            "out_of_stock_products": Product.objects.filter(
+                stock_quantity=0
+            ).count(),
+
+            "inventory_value": Product.objects.aggregate(
+                total=Sum("price")
+            )["total"] or 0,
+
+            "average_price": Product.objects.aggregate(
+                avg=Avg("price")
+            )["avg"] or 0,
         }
 
         recent_products = list(
-            Product.objects.order_by("-created_at")
-            .values(
+            Product.objects.values(
                 "id",
                 "name",
                 "price",
-                "stock",
-            )[:5]
-        )
-
-        latest_orders = list(
-            Order.objects.order_by("-created_at")
-            .values(
-                "id",
-                "created_at",
-            )[:5]
+                "stock_quantity",
+            ).order_by("-created_at")[:5]
         )
 
         return ApiResponse.success(
             data={
                 "cards": cards,
                 "recent_products": recent_products,
-                "latest_orders": latest_orders,
             },
-            message="Dashboard data fetched successfully.",
+            message="Dashboard loaded successfully.",
         )
