@@ -21,40 +21,21 @@ from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularSwaggerView,
 )
-
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
 
-     path(
-        "api/schema/",
-        SpectacularAPIView.as_view(),
+    path(
+        "admin/",
+        admin.site.urls,
     ),
 
     path(
-        "api/docs/",
-        SpectacularSwaggerView.as_view(
-            url_name="schema"
-        ),
+        "api/v1/",
+        include("api.v1.urls"),
     ),
 
-path(
-    "api/products/",
-    include("products.urls"),
-),
-
-    path("api/auth/", include("users.urls")),
-path(
-    "api/reports/",
-    include("reports.urls"),
-),
-    path(
-        "api/categories/",
-        include("categories.urls"),
-    ),
 ]
-
 
 if settings.DEBUG:
     urlpatterns += static(

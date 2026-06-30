@@ -1,0 +1,1 @@
+from categories.urls import urlpatterns

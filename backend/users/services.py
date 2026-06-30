@@ -1,8 +1,9 @@
 from rest_framework import status
-from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
-
 from django.contrib.auth import authenticate
+
+from common.logging import security_logger
+from common.responses import ApiResponse
 
 from .serializers import (
     RegisterSerializer,
@@ -16,13 +17,18 @@ class UserService:
     def register(data):
 
         serializer = RegisterSerializer(data=data)
-
         serializer.is_valid(raise_exception=True)
 
         user = serializer.save()
 
-        return Response(
-            UserSerializer(user).data,
+        security_logger.info(
+            "New user registered: %s",
+            user.email,
+        )
+
+        return ApiResponse.success(
+            data=UserSerializer(user).data,
+            message="User registered successfully.",
             status=status.HTTP_201_CREATED,
         )
 
@@ -30,7 +36,6 @@ class UserService:
     def login(data):
 
         email = data.get("email")
-
         password = data.get("password")
 
         user = authenticate(
@@ -40,26 +45,36 @@ class UserService:
 
         if not user:
 
-            return Response(
-                {
-                    "detail": "Invalid email or password."
-                },
+            security_logger.warning(
+                "Failed login attempt: %s",
+                email,
+            )
+
+            return ApiResponse.error(
+                message="Invalid email or password.",
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
         refresh = RefreshToken.for_user(user)
 
-        return Response(
-            {
+        security_logger.info(
+            "User logged in: %s",
+            user.email,
+        )
+
+        return ApiResponse.success(
+            data={
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
                 "user": UserSerializer(user).data,
-            }
+            },
+            message="Login successful.",
         )
 
     @staticmethod
     def me(user):
 
-        return Response(
-            UserSerializer(user).data
+        return ApiResponse.success(
+            data=UserSerializer(user).data,
+            message="User profile fetched successfully.",
         )

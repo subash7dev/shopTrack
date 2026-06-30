@@ -1,0 +1,1 @@
+from reports.urls import urlpatterns

@@ -1,0 +1,1 @@
+from products.urls import urlpatterns
