@@ -1,19 +1,18 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from .models import Product
-from .serializers import ProductSerializer
 from .permissions import IsAdmin
+from .serializers import ProductSerializer
 
 
 class ProductViewSet(ModelViewSet):
 
-    queryset = (
-        Product.objects
-        .select_related("category")
-        .all()
-    )
+    queryset = Product.objects.select_related(
+        "category"
+    ).all()
 
     serializer_class = ProductSerializer
 
@@ -23,8 +22,14 @@ class ProductViewSet(ModelViewSet):
     ]
 
     filter_backends = [
+        DjangoFilterBackend,
         filters.SearchFilter,
         filters.OrderingFilter,
+    ]
+
+    filterset_fields = [
+        "category",
+        "is_active",
     ]
 
     search_fields = [
@@ -34,10 +39,10 @@ class ProductViewSet(ModelViewSet):
     ]
 
     ordering_fields = [
-        "name",
         "price",
         "stock_quantity",
         "created_at",
+        "name",
     ]
 
     ordering = [
